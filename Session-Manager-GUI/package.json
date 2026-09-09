@@ -1,0 +1,23 @@
+{
+  "name": "Session-Manager-GUI",
+  "version": "0.1.1",
+  "description": "DeepSeek Harness (web profile) dual-half plugin: session recycle bin, archived-session viewer in Settings, and a 4th 'delete' action in the session row menu. Independent plugin that provides WebUI session management features.",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "dsh": {
+    "client": {
+      "platform": "web"
+    }
+  }
+}
