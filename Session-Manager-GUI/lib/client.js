@@ -117,6 +117,29 @@ window.__ModuleLoader__.load({
       archivedDelete: (sessionId) => apiPost("/archived/delete", { sessionId }),
     };
 
+    /*
+     * Catalog resync hook, installed by apply(ctx).
+     *
+     * The sidebar catalog (the client `sessions` service) is only pulled when
+     * a connection generation starts — `sessions.refresh()` is what
+     * reconnect calls internally. A host-side restore/purge changes which
+     * sessions EXIST for the catalog, but emits no workspace-feed frame that
+     * would re-pull it, so a restored session stayed missing from the sidebar
+     * (while `@` mention candidates — a host-side listing — already saw it).
+     * Calling refresh() after such operations repaints the sidebar.
+     */
+    var refreshSessionCatalog = null;
+
+    function notifyCatalogChanged() {
+      try {
+        if (typeof refreshSessionCatalog !== "function") return;
+        var pending = refreshSessionCatalog();
+        if (pending != null && typeof pending.catch === "function") pending.catch(function () {});
+      } catch (error) {
+        /* best effort: a failed resync must never fail the action itself */
+      }
+    }
+
     /* ------------------------------------------------------------ locale */
 
     var zhTrash = {
@@ -391,6 +414,7 @@ window.__ModuleLoader__.load({
           .then(() => {
             setBusyId(null);
             after();
+            notifyCatalogChanged();
           })
           .catch((error) => {
             setBusyId(null);
@@ -459,6 +483,7 @@ window.__ModuleLoader__.load({
           .then(() => {
             setBusyId(null);
             after();
+            notifyCatalogChanged();
           })
           .catch((error) => {
             setBusyId(null);
@@ -516,6 +541,7 @@ window.__ModuleLoader__.load({
       api.trashAdd(sessionId).then(
         function () {
           showToast("ok", "已移入回收站");
+          notifyCatalogChanged();
         },
         function (error) {
           // eslint-disable-next-line no-console
@@ -527,6 +553,13 @@ window.__ModuleLoader__.load({
 
     function apply(ctx) {
       ensureCss();
+      // Install the catalog resync hook: the client `sessions` service exposes
+      // refresh(), the same pull a reconnect performs (see notifyCatalogChanged).
+      refreshSessionCatalog = () => {
+        var sessions = ctx.get("sessions");
+        if (sessions != null && typeof sessions.refresh === "function") return sessions.refresh();
+        return undefined;
+      };
       ctx.effect(() => ctx.locale.register("settings.sessionTrash", { zh: zhTrash, en: enTrash }), "Session-Manager-GUI.locale.trash");
       ctx.effect(() => ctx.locale.register("settings.sessionArchived", { zh: zhArchived, en: enArchived }), "Session-Manager-GUI.locale.archived");
 

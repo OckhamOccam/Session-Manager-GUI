@@ -18,7 +18,7 @@
  *
  * Guards / migration:
  *  - every target is checksum-pinned to the artifact of DeepSeek Harness
- *    0.1.2-rc.1 (see EXPECTED below);
+ *    0.1.5-rc.1 (see EXPECTED below);
  *  - a same-directory backup "备份_client.js" is created before the first
  *    patch of each artifact;
  *  - if an artifact is not the pinned original but a backup with the pinned
@@ -49,7 +49,7 @@ const TARGETS = {
   menu: {
     label: "session row menu",
     file: join(DSH_PROFILES, "node_modules", "@deepseek-ai", "dsh-client-ui-workspace", "lib", "client.js"),
-    expectedSha256: "53c40660195c42cde709b802e239f473dd721f45bc329684af31c01fdb73282a",
+    expectedSha256: "383b9ef779366c13d818500b6488896328b189f156addbaa480c835e902edd5f",
     marker: "Session-Manager-GUI:delete",
     patch: patchMenu,
     changes: "+1 menu item (删除会话, IconTrashOutline16), +1 onSelect dispatch branch",
@@ -57,7 +57,7 @@ const TARGETS = {
   settings: {
     label: "settings navigation icons",
     file: join(DSH_PROFILES, "node_modules", "@deepseek-ai", "dsh-client-ui-settings-general", "lib", "client.js"),
-    expectedSha256: "903bb84407104d5511f38eac13fc740ad147bab6a9c8d51bde52d90cfd996aff",
+    expectedSha256: "c5995dba8c3b944a46ebae6bc860b35b8adacd4786105ca636b5b73b84ae396e",
     marker: 'id === "session-trash"',
     patch: patchSettingsNav,
     changes: '+2 navIcon branches (session-trash -> IconTrashOutline16, session-archived -> IconArchiveOutline20)',

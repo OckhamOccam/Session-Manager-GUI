@@ -1,18 +1,23 @@
 # =====================================================================
-# Session-Manager-GUI 安装片段
+# Session-Manager-GUI 安装片段（独立插件，与 session-editor 可共存）
 # ---------------------------------------------------------------------
 # 编辑 ~/.dsh/profiles/web/cordis.patch.yml：
 #
-#  1) 追加下面这行，id 可保持默认：
+#  1) 保留已有插件行（若已安装 session-editor）：
+#        - id: session-editor
+#          name: './session-editor/lib/index.js'
+#     Session-Manager-GUI 不注册聊天工具，与它不存在同名冲突，两者可并存。
+#
+#  2) 追加下面这行，id 可保持默认：
 #        - insert:
 #            - id: Session-Manager-GUI
 #              name: 'Session-Manager-GUI'
 #
-#  2) 插件包必须位于 profile 模块解析链的 node_modules 中（推荐）：
+#  3) 插件包必须位于 profile 模块解析链的 node_modules 中（推荐）：
 #        ~/.dsh/profiles/node_modules/Session-Manager-GUI/
 #    （新包需重启才能被 loader 与 client 模块扫描器发现）
 #
-#  3) 运行 UI 补丁（会话菜单图标 + 设置导航图标）：
+#  4) 运行 UI 补丁（会话菜单图标 + 设置导航图标）：
 #        node install/patch-ui.js
 #
 # 说明：该行同时挂载主机半面（/Session-Manager-GUI JSON API）与
@@ -20,6 +25,6 @@
 # =====================================================================
 
 - insert:
-    # WebUI：会话回收站 + 已归档会话查看 + 会话行“删除会话”菜单项（0.1.1）
+    # WebUI：会话回收站 + 已归档会话查看 + 会话行“删除会话”菜单项（0.1.5）
     - id: Session-Manager-GUI
       name: 'Session-Manager-GUI'
